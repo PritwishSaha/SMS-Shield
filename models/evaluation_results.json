@@ -1,0 +1,14 @@
+{
+    "model": "Linear SVM",
+    "vectorizer": "TF-IDF",
+    "best_parameters": {
+        "svm__C": 0.5,
+        "svm__class_weight": "balanced"
+    },
+    "test_samples": 1032,
+    "accuracy": 0.9903100775193798,
+    "spam_precision": 0.9758064516129032,
+    "spam_recall": 0.9453125,
+    "spam_f1_score": 0.9603174603174603,
+    "macro_f1_score": 0.9773993482602754
+}

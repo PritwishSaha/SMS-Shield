@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="AI-powered SMS Spam Detection using Machine Learning">
+
+    <meta name="theme-color" content="#071230">
+
+    <title>SMS Shield | Spam Detection</title>
+
+    <link rel="icon"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%91%3C/text%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- Shared SVG definitions: crown shape + royal gradients -->
+    <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+
+        <defs>
+
+            <linearGradient id="gGold" gradientUnits="userSpaceOnUse"
+                            x1="0" y1="0" x2="200" y2="170">
+                <stop offset="0" stop-color="#fff0b8" />
+                <stop offset="0.3" stop-color="#f4d57a" />
+                <stop offset="0.65" stop-color="#d4af37" />
+                <stop offset="1" stop-color="#8f6d12" />
+            </linearGradient>
+
+            <linearGradient id="gRed" gradientUnits="userSpaceOnUse"
+                            x1="0" y1="40" x2="200" y2="170">
+                <stop offset="0" stop-color="#ff5a72" />
+                <stop offset="0.55" stop-color="#c8102e" />
+                <stop offset="1" stop-color="#6e0a1b" />
+            </linearGradient>
+
+            <linearGradient id="gNavy" gradientUnits="userSpaceOnUse"
+                            x1="0" y1="0" x2="200" y2="170">
+                <stop offset="0" stop-color="#4a6fc4" />
+                <stop offset="1" stop-color="#0a1c45" />
+            </linearGradient>
+
+            <linearGradient id="gGoldBox" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff0b8" />
+                <stop offset="0.5" stop-color="#d4af37" />
+                <stop offset="1" stop-color="#8f6d12" />
+            </linearGradient>
+
+            <symbol id="crown-shape" viewBox="0 0 200 170">
+                <path d="M22 140 L8 52 L56 92 L100 28 L144 92 L192 52 L178 140 Z" />
+                <circle cx="8" cy="46" r="9" />
+                <circle cx="100" cy="21" r="10" />
+                <circle cx="192" cy="46" r="9" />
+                <rect x="20" y="140" width="160" height="22" rx="6" />
+            </symbol>
+
+        </defs>
+
+    </svg>
+
+    <!-- Animated background layers -->
+    <canvas id="particles" aria-hidden="true"></canvas>
+    <canvas id="burstCanvas" aria-hidden="true"></canvas>
+
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+    <div class="background-glow glow-three"></div>
+
+    <div class="bg-floor" aria-hidden="true"></div>
+
+
+    <header class="navbar" id="navbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+
+                <svg viewBox="0 0 200 170" aria-hidden="true">
+                    <use href="#crown-shape" fill="url(#gGold)" />
+                </svg>
+
+            </div>
+
+            <div>
+                <h2>SMS Shield</h2>
+                <span>Intelligent Message Security</span>
+            </div>
+
+        </div>
+
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            <span>Model Online</span>
+
+        </div>
+
+    </header>
+
+
+    <main class="main-container">
+
+        <!-- HERO SECTION -->
+
+        <section class="hero">
+
+            <div class="hero-copy">
+
+                <div class="hero-tag reveal">
+
+                    <span class="tag-dot"></span>
+
+                    MACHINE LEARNING POWERED
+
+                </div>
+
+                <h1 class="reveal" style="--delay: .08s">
+                    Detect Spam Before
+                    <span class="gold-text">It Reaches You.</span>
+                </h1>
+
+                <p class="hero-text reveal" style="--delay: .16s">
+                    Analyze suspicious SMS messages using Natural Language
+                    Processing and a trained Machine Learning model.
+                </p>
+
+                <div class="hero-actions reveal" style="--delay: .24s">
+
+                    <a href="#analyzer" class="cta-primary">
+                        Analyze a message
+                        <span aria-hidden="true">→</span>
+                    </a>
+
+                    <a href="#performance" class="cta-ghost">
+                        View performance
+                    </a>
+
+                </div>
+
+                <ul class="hero-pills reveal" style="--delay: .32s">
+                    <li>TF-IDF Features</li>
+                    <li>Linear SVM</li>
+                    <li>Instant Verdict</li>
+                </ul>
+
+            </div>
+
+
+            <!-- 3D CROWN -->
+
+            <div class="crown-stage reveal" id="crownStage"
+                 style="--delay: .2s" aria-hidden="true">
+
+                <div class="crown-glow"></div>
+
+                <div class="crown-tilt" id="crownTilt">
+
+                    <div class="orbit orbit-1"></div>
+                    <div class="orbit orbit-2"></div>
+
+                    <span class="gem gem-1"></span>
+                    <span class="gem gem-2"></span>
+                    <span class="gem gem-3"></span>
+                    <span class="gem gem-4"></span>
+
+                    <div class="crown-spin">
+
+                        <svg class="crown-layer" style="--z:-32px; --c:#3e2d06" viewBox="0 0 200 170"><use href="#crown-shape" /></svg>
+                        <svg class="crown-layer" style="--z:-28px; --c:#4b3608" viewBox="0 0 200 170"><use href="#crown-shape" /></svg>
+                        <svg class="crown-layer" style="--z:-24px; --c:#5a420b" viewBox="0 0 200 170"><use href="#crown-shape" /></svg>
+                        <svg class="crown-layer" style="--z:-20px; --c:#6a4f0e" viewBox="0 0 200 170"><use href="#crown-shape" /></svg>
+                        <svg class="crown-layer" style="--z:-16px; --c:#7b5d12" viewBox="0 0 200 170"><use href="#crown-shape" /></svg>
+                        <svg class="crown-layer" style="--z:-12px; --c:#8c6c16" viewBox="0 0 200 170"><use href="#crown-shape" /></svg>
+                        <svg class="crown-layer" style="--z:-8px; --c:#9e7c1b" viewBox="0 0 200 170"><use href="#crown-shape" /></svg>
+                        <svg class="crown-layer" style="--z:-4px; --c:#b08d22" viewBox="0 0 200 170"><use href="#crown-shape" /></svg>
+
+                        <svg class="crown-face" viewBox="0 0 200 170">
+
+                            <path d="M22 140 L8 52 L56 92 L100 28 L144 92 L192 52 L178 140 Z"
+                                  fill="url(#gGold)" />
+
+                            <path d="M38 132 L27 74 L60 101 L100 49 L140 101 L173 74 L162 132 Z"
+                                  fill="url(#gRed)" />
+
+                            <path d="M100 49 L100 132"
+                                  stroke="rgba(255,240,184,0.28)"
+                                  stroke-width="1.5" />
+
+                            <circle cx="8" cy="46" r="9" fill="url(#gGold)" />
+                            <circle cx="100" cy="21" r="10" fill="url(#gGold)" />
+                            <circle cx="192" cy="46" r="9" fill="url(#gGold)" />
+
+                            <circle cx="100" cy="21" r="3.5" fill="#ffffff" opacity="0.65" />
+
+                            <rect x="20" y="140" width="160" height="22" rx="6"
+                                  fill="url(#gGold)" />
+
+                            <circle cx="52" cy="151" r="5.5" fill="url(#gNavy)"
+                                    stroke="#fff0b8" stroke-width="1.2" />
+
+                            <circle cx="100" cy="151" r="7" fill="url(#gRed)"
+                                    stroke="#fff0b8" stroke-width="1.2" />
+
+                            <circle cx="148" cy="151" r="5.5" fill="url(#gNavy)"
+                                    stroke="#fff0b8" stroke-width="1.2" />
+
+                        </svg>
+
+                    </div>
+
+                </div>
+
+                <div class="crown-shadow"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN DETECTION CARD -->
+
+        <div class="card-wrap reveal" id="analyzer">
+
+            <section class="detection-card tilt"
+                     id="detectionCard"
+                     data-tilt="3.5"
+                     data-lock-on-focus="true">
+
+                <div class="card-header">
+
+                    <div>
+                        <h2>Message Analyzer</h2>
+
+                        <p>
+                            Enter your SMS message below.
+                        </p>
+                    </div>
+
+                    <div class="shield-icon" aria-hidden="true">
+
+                        <svg viewBox="0 0 64 72">
+
+                            <defs>
+                                <linearGradient id="gShield" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0" stop-color="#1b3a82" />
+                                    <stop offset="1" stop-color="#071230" />
+                                </linearGradient>
+                            </defs>
+
+                            <path d="M32 3 L59 13 V35 C59 52 47 64 32 69 C17 64 5 52 5 35 V13 Z"
+                                  fill="url(#gShield)"
+                                  stroke="url(#gGoldBox)"
+                                  stroke-width="2.5" />
+
+                            <use href="#crown-shape"
+                                 x="17" y="22" width="30" height="26"
+                                 fill="url(#gGold)" />
+
+                        </svg>
+
+                    </div>
+
+                </div>
+
+
+                <div class="input-section">
+
+                    <label for="messageInput">
+                        YOUR SMS MESSAGE
+                    </label>
+
+                    <div class="samples">
+
+                        <span>Try an example:</span>
+
+                        <button type="button"
+                                class="sample-chip"
+                                data-sample="spam">
+                            Spam sample
+                        </button>
+
+                        <button type="button"
+                                class="sample-chip"
+                                data-sample="ham">
+                            Legit sample
+                        </button>
+
+                    </div>
+
+                    <div class="textarea-wrap">
+
+                        <textarea
+                            id="messageInput"
+                            placeholder="Paste your SMS message here..."
+                            maxlength="5000"
+                            rows="6"
+                        ></textarea>
+
+                        <div class="scan-line" aria-hidden="true"></div>
+
+                    </div>
+
+                    <div class="count-bar" aria-hidden="true">
+                        <span id="countBar"></span>
+                    </div>
+
+                    <div class="input-footer">
+
+                        <span id="characterCount">
+                            0 / 5000 characters
+                        </span>
+
+                        <button id="clearButton"
+                                class="clear-button"
+                                type="button">
+                            Clear
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <button id="analyzeButton"
+                        class="analyze-button"
+                        type="button">
+
+                    <span id="buttonText">
+                        Analyze Message
+                    </span>
+
+                    <span class="button-arrow">
+                        →
+                    </span>
+
+                    <span class="spinner" aria-hidden="true"></span>
+
+                </button>
+
+                <p class="shortcut-hint">
+                    Tip: press Ctrl + Enter to analyze quickly
+                </p>
+
+
+                <div id="errorMessage"
+                     class="error-message hidden"
+                     role="alert">
+                </div>
+
+
+                <!-- RESULT SECTION -->
+
+                <section id="resultSection"
+                         class="result-section hidden"
+                         aria-live="polite">
+
+                    <div class="result-top">
+
+                        <span class="result-label">
+                            ANALYSIS RESULT
+                        </span>
+
+                        <span id="resultTime"
+                              class="result-time">
+                        </span>
+
+                    </div>
+
+
+                    <div id="resultBadge"
+                         class="result-badge">
+
+                        <span id="resultIcon"></span>
+
+                        <span id="resultText"></span>
+
+                    </div>
+
+
+                    <p id="resultDescription"
+                       class="result-description">
+                    </p>
+
+
+                    <div class="analyzed-message">
+
+                        <span>ANALYZED MESSAGE</span>
+
+                        <p id="analyzedMessage"></p>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+        </div>
+
+
+        <!-- PERFORMANCE SECTION -->
+
+        <section class="statistics" id="performance">
+
+            <div class="section-heading reveal">
+
+                <h2>Model Performance</h2>
+
+                <p>
+                    Evaluation results from the held-out test dataset.
+                </p>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="reveal" style="--delay: .05s">
+
+                    <div class="stat-card tilt" data-tilt="12" data-lift="4">
+
+                        <span class="stat-title">
+                            Accuracy
+                        </span>
+
+                        <h3 data-count="{{ '%.2f'|format(metrics.get('accuracy', 0) * 100) }}">{{ "%.2f"|format(metrics.get("accuracy", 0) * 100) }}%</h3>
+
+                        <div class="stat-meter">
+                            <span style="--w: {{ '%.2f'|format(metrics.get('accuracy', 0) * 100) }}%"></span>
+                        </div>
+
+                        <span class="stat-subtitle">
+                            Overall correctness
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="reveal" style="--delay: .15s">
+
+                    <div class="stat-card tilt" data-tilt="12" data-lift="4">
+
+                        <span class="stat-title">
+                            Spam Precision
+                        </span>
+
+                        <h3 data-count="{{ '%.2f'|format(metrics.get('spam_precision', 0) * 100) }}">{{ "%.2f"|format(metrics.get("spam_precision", 0) * 100) }}%</h3>
+
+                        <div class="stat-meter">
+                            <span style="--w: {{ '%.2f'|format(metrics.get('spam_precision', 0) * 100) }}%"></span>
+                        </div>
+
+                        <span class="stat-subtitle">
+                            Spam prediction precision
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="reveal" style="--delay: .25s">
+
+                    <div class="stat-card tilt" data-tilt="12" data-lift="4">
+
+                        <span class="stat-title">
+                            Spam Recall
+                        </span>
+
+                        <h3 data-count="{{ '%.2f'|format(metrics.get('spam_recall', 0) * 100) }}">{{ "%.2f"|format(metrics.get("spam_recall", 0) * 100) }}%</h3>
+
+                        <div class="stat-meter">
+                            <span style="--w: {{ '%.2f'|format(metrics.get('spam_recall', 0) * 100) }}%"></span>
+                        </div>
+
+                        <span class="stat-subtitle">
+                            Spam detection rate
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="reveal" style="--delay: .35s">
+
+                    <div class="stat-card tilt" data-tilt="12" data-lift="4">
+
+                        <span class="stat-title">
+                            Macro F1-Score
+                        </span>
+
+                        <h3 data-count="{{ '%.2f'|format(metrics.get('macro_f1_score', 0) * 100) }}">{{ "%.2f"|format(metrics.get("macro_f1_score", 0) * 100) }}%</h3>
+
+                        <div class="stat-meter">
+                            <span style="--w: {{ '%.2f'|format(metrics.get('macro_f1_score', 0) * 100) }}%"></span>
+                        </div>
+
+                        <span class="stat-subtitle">
+                            Balanced class performance
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MODEL INFORMATION -->
+
+        <section class="model-information">
+
+            <h2 class="reveal">About the Detection System</h2>
+
+            <div class="information-grid">
+
+                <div class="reveal" style="--delay: .05s">
+
+                    <div class="information-item tilt" data-tilt="9" data-lift="4">
+
+                        <span class="info-number">01</span>
+
+                        <h3>TF-IDF</h3>
+
+                        <p>
+                            Converts SMS messages into numerical text features
+                            for machine learning.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="reveal" style="--delay: .15s">
+
+                    <div class="information-item tilt" data-tilt="9" data-lift="4">
+
+                        <span class="info-number">02</span>
+
+                        <h3>Linear SVM</h3>
+
+                        <p>
+                            Classifies messages into Spam and legitimate
+                            Ham categories.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="reveal" style="--delay: .25s">
+
+                    <div class="information-item tilt" data-tilt="9" data-lift="4">
+
+                        <span class="info-number">03</span>
+
+                        <h3>NLP Processing</h3>
+
+                        <p>
+                            Processes text before passing it to the trained
+                            classification pipeline.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MEET THE MAKER -->
+
+        <section class="maker-section" id="maker">
+
+            <h2 class="maker-heading reveal">Meet the Maker</h2>
+
+            <div class="reveal" style="--delay: .1s">
+
+                <div class="maker-card tilt" data-tilt="4">
+
+                    <div class="maker-photo">
+
+                        <span class="maker-crown" aria-hidden="true">
+                            <svg viewBox="0 0 200 170">
+                                <use href="#crown-shape" fill="url(#gGold)" />
+                            </svg>
+                        </span>
+
+                        <div class="maker-frame">
+
+                            <!--
+                                Put the photo at:  static/img/pritwish.jpg
+                                If the file is missing, the "PS" monogram shows instead.
+                            -->
+                            <img src="{{ url_for('static', filename='img/pritwish.jpg') }}"
+                                 alt="Pritwish Saha"
+                                 loading="lazy"
+                                 onerror="this.closest('.maker-photo').classList.add('no-photo')">
+
+                            <div class="maker-fallback" aria-hidden="true">
+                                <span>PS</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="maker-info">
+
+                        <span class="maker-label">THE MAKER</span>
+
+                        <h3 class="maker-name">Pritwish Saha</h3>
+
+                        <p class="maker-role">Creator of SMS Shield</p>
+
+                        <p class="maker-bio">
+                            SMS Shield is a machine learning project that detects
+                            spam text messages using TF-IDF features and a Linear
+                            SVM classifier, served through a Flask web app.
+                        </p>
+
+                        <ul class="maker-tags">
+                            <li>Python</li>
+                            <li>Flask</li>
+                            <li>NLP</li>
+                            <li>Scikit-learn</li>
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <div class="footer-crown" aria-hidden="true">
+
+            <svg viewBox="0 0 200 170">
+                <use href="#crown-shape" fill="url(#gGold)" />
+            </svg>
+
+        </div>
+
+        <p>
+            SMS Shield | Machine Learning Project
+        </p>
+
+        <span>
+            Built with Python, Flask, NLP and Scikit-learn
+        </span>
+
+    </footer>
+
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>
